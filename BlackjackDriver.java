@@ -21,6 +21,7 @@ public class BlackjackDriver
         boolean win;
         boolean lose;
         boolean done = false;
+        boolean doubleDown = false;
         String choice;
         // user hand and dealer hand
         Card cardOne;
@@ -102,12 +103,25 @@ public class BlackjackDriver
             // if player hasn't won or lost yet
             while (!win && !lose)
             {
-                System.out.println("Hit, Stand, or Double?");
+                if (hits == 0)
+                {
+                    System.out.println("Hit, Stand, or Double?");
+                }
+                else
+                {
+                    System.out.println("Hit or Stand?");
+                }
                 choice = kb.next();
                 while (!choice.equalsIgnoreCase("Hit") && !choice.equalsIgnoreCase("Stand") && !choice.equalsIgnoreCase("Double"))
                 {
                     System.out.println("Invalid answer...");
                     System.out.println("Hit, Stand, or Double?");
+                    choice = kb.next();
+                }
+                while (choice.equalsIgnoreCase("Double") && hits > 0)
+                {
+                    System.out.println("Invalid answer...");
+                    System.out.println("Hit or Stand?");
                     choice = kb.next();
                 }
                 if (choice.equalsIgnoreCase("Hit"))
@@ -148,8 +162,17 @@ public class BlackjackDriver
                     }
 
                 }
-                else if (choice.equalsIgnoreCase("Stand"))
+                else if (choice.equalsIgnoreCase("Stand") || choice.equalsIgnoreCase("Double"))
                 {
+                    if (choice.equalsIgnoreCase("Double") && hits == 0)
+                    {
+                        cardThree = deck.get(0);
+                        deck.remove(0);
+                        System.out.println("Your Hand: " + cardOne + " " + cardTwo + " " + cardThree);
+                        playerTotal += cardThree.value;
+                        doubleDown = true;
+                        money -= bet;
+                    }
                     done = true;
                     System.out.println("Dealer Hand: " + dealOne + " " + dealTwo);
                     // dealer stands on 17 and draws to 16
@@ -232,10 +255,6 @@ public class BlackjackDriver
                         }
                     }
                 }
-                // else if (choice.equalsIgnoreCase("Double"))
-                // {
-
-                // }
                 // if you get a blackjack
                 if (((cardOne.value + cardTwo.value) == max) && playerTotal > dealerTotal && done)
                 {
@@ -259,7 +278,6 @@ public class BlackjackDriver
                 // if dealer beats the player and the player doesn't bust
                 else if (dealerTotal > playerTotal && dealerTotal <= max && done)
                 {
-                    System.out.println(dealerTotal);
                     System.out.println("The dealer wins!");
                     lose = true;
                 }
@@ -268,6 +286,12 @@ public class BlackjackDriver
                     System.out.println("Push!");
                     money += bet;
                     lose = true;
+                }
+                else if (playerTotal > dealerTotal && playerTotal <= max && done && doubleDown)
+                {
+                    System.out.println("You Win!");
+                    money += bet*4;
+                    win = true;
                 }
                 else if (playerTotal > dealerTotal && playerTotal <= max && done)
                 {
