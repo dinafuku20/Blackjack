@@ -16,6 +16,6 @@ public class Card
     // overrides toString method when printing an object
     public String toString()
     {
-        return rank+""+suit+"";
+        return rank+suit;
     }
 }
