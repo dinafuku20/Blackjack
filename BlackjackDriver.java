@@ -23,28 +23,15 @@ public class BlackjackDriver
         boolean done = false;
         boolean doubleDown = false;
         String choice;
-        // user hand and dealer hand
-        Card cardOne;
-        Card cardTwo;
-        Card cardThree = null;
-        Card cardFour = null;
-        Card cardFive = null;
-        Card cardSix = null;
-        Card dealOne;
-        Card dealTwo;
-        Card dealThree = null;
-        Card dealFour = null;
-        Card dealFive = null;
-        Card dealSix = null;
+
         // array list objects
         ArrayList<Card> deck = new ArrayList<Card>();
         ArrayList<Card> playerHand = new ArrayList<Card>();
         ArrayList<Card> dealerHand = new ArrayList<Card>();
+        // create deck
         deck = createDeck(deck);
 
         System.out.println("Welcome to a game of Blackjack!");
-        // Shuffles deck
-        // Collections.shuffle(deck);
         // while player still has money, continue game
         while (!broke)
         {
@@ -85,6 +72,7 @@ public class BlackjackDriver
             // if player hasn't won or lost yet
             while (!win && !lose)
             {
+                // prompt user to hit, stand, or double, if you've already hit you can't double down
                 if (hits == 0)
                 {
                     System.out.println("Hit, Stand, or Double?");
@@ -140,8 +128,10 @@ public class BlackjackDriver
                     }
 
                 }
+                // if player choooses to stand
                 else if (choice.equalsIgnoreCase("Stand") || choice.equalsIgnoreCase("Double"))
                 {
+                    // if user doubles, draw card, add to total, subtract from money
                     if (choice.equalsIgnoreCase("Double") && hits == 0)
                     {
                         playerHand.add(deck.remove(0));
@@ -150,6 +140,7 @@ public class BlackjackDriver
                         doubleDown = true;
                         money -= bet;
                     }
+                    // done is a variable that tracks if the user's hand is done (user won't draw any more cards)
                     done = true;
                     System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1));
                     // dealer stands on 17 and draws to 16
@@ -224,8 +215,6 @@ public class BlackjackDriver
                         }
                     }
                 }
-                System.out.println(playerTotal);
-                System.out.println(dealerTotal);
                 // if you get a blackjack
                 if (((playerHand.get(0).value + playerHand.get(1).value) == max) && playerTotal > dealerTotal && done)
                 {
@@ -239,6 +228,7 @@ public class BlackjackDriver
                     System.out.println("The dealer wins!");
                     lose = true;
                 }
+                // if dealer goes over 21
                 else if (dealerTotal > max)
                 {
                     System.out.println("The dealer busts!");
@@ -252,18 +242,21 @@ public class BlackjackDriver
                     System.out.println("The dealer wins!");
                     lose = true;
                 }
+                // if dealer and player tie, push
                 else if (dealerTotal == playerTotal && done)
                 {
                     System.out.println("Push!");
                     money += bet;
                     lose = true;
                 }
+                // if player wins and doubled down
                 else if (playerTotal > dealerTotal && playerTotal <= max && done && doubleDown)
                 {
                     System.out.println("You Win!");
                     money += bet*4;
                     win = true;
                 }
+                // if player wins
                 else if (playerTotal > dealerTotal && playerTotal <= max && done)
                 {
                     System.out.println("You Win!");
@@ -289,10 +282,12 @@ public class BlackjackDriver
         int value;
         int size = deck.size();
         ArrayList<Card> deckTwo = new ArrayList<Card>();
+        // remove all cards from the deck
         for (int i = 0; i < size; i++)
         {
             deck.remove(0);
         }
+        // create a new deck
         for (int i = 1; i < 14; i++)
         {
             // Loop from 1 to 13
@@ -325,17 +320,22 @@ public class BlackjackDriver
     {
         int sum = 0;
         int ace = 0;
+        // iterate through hand to see if there is an ace
         for (int i = 0; i < hand.size(); i++)
         {
+            // if there is an ace, make the value 11 and count amout of aces in hand
             if (hand.get(i).value == 1 || hand.get(i).value == 11)
             {
                 hand.get(i).value = 11;
                 ace++;
             }
+            // add up value of hand
             sum += hand.get(i).value;
         }
+        // if the user or dealer goes over 21 and has aces in hand, make the value of the aces 1
         if ((sum > 21) && (ace > 0))
         {
+            // iterate through hand, if there's an ace make the value 1, add to sum
             for (int i = 0; i < hand.size(); i++)
             {
                 if (hand.get(i).value == 11)
@@ -344,6 +344,7 @@ public class BlackjackDriver
                     sum += hand.get(i).value;
                 }
             }
+            // subtract 11 per ace since the ace has a value off 1 now
             sum -= 11*ace;
         }
         return sum;
@@ -351,7 +352,9 @@ public class BlackjackDriver
     // empty hands
     public static void emptyHand(ArrayList<Card> hand)
     {
+        // create size variable since arraylist grows and shrinks when removing
         int size = hand.size();
+        // iterate through hand and remove all cards from hand
         for (int i = 0; i < size; i++)
         {
             hand.remove(0);
