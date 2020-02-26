@@ -38,36 +38,22 @@ public class BlackjackDriver
         Card dealSix = null;
         // array list objects
         ArrayList<Card> deck = new ArrayList<Card>();
-        // Loop from 1 to 13
-        // Creates 52 card deck
-        for (int i = 1; i < 14; i++)
-        {
-            if (i > 10)
-            {
-                value = 10;
-            }
-            else
-            {
-                value = i;
-            }
-            // Create a new Card with a suit, value, and rank
-            // Add it to deck
-            Card d = new Card("D", value, i);
-            deck.add(d);
-            Card s = new Card("S", value, i);
-            deck.add(s);
-            Card h = new Card("H", value, i);
-            deck.add(h);
-            Card c = new Card("C", value, i);
-            deck.add(c);
-        }
+        ArrayList<Card> playerHand = new ArrayList<Card>();
+        ArrayList<Card> dealerHand = new ArrayList<Card>();
+        deck = createDeck(deck);
 
         System.out.println("Welcome to a game of Blackjack!");
         // Shuffles deck
-        Collections.shuffle(deck);
+        // Collections.shuffle(deck);
         // while player still has money, continue game
         while (!broke)
         {
+            // create a new deck if there are <=15 cards in the deck
+            if (deck.size() <= 20)
+            {
+                deck = createDeck(deck);
+            }
+            // reset these variables before the start of a hand
             win = false;
             lose = false;
             hits = 0;
@@ -75,6 +61,7 @@ public class BlackjackDriver
             dealerTotal = 0;
             dealerHits = 0;
             done = false;
+            // prompt user for bet amount and if it's greater than their money or <1, prompt again
             System.out.println("Balance: $" + money);
             System.out.print("Bet: $");
             bet = kb.nextInt();
@@ -84,22 +71,17 @@ public class BlackjackDriver
                 System.out.print("Bet: $");
                 bet = kb.nextInt();
             }
+            // subtract bet amonunt from money
             money -= bet;
             // get dealer hand, user hand, remove those four cards from the deck
-            cardOne = deck.get(0);
-            dealOne = deck.get(1);
-            cardTwo = deck.get(2);
-            dealTwo = deck.get(3);
-            deck.remove(0);
-            deck.remove(0);
-            deck.remove(0);
-            deck.remove(0);
-            System.out.println("Dealer Hand: " + dealOne + " ??");
-            System.out.println("Your Hand: " + cardOne + " " + cardTwo);
-            // add first two cards to running player total
-            playerTotal = cardOne.value + cardTwo.value;
-            // add first two cards the dealer recieves to running dealer total
-            dealerTotal = dealOne.value + dealTwo.value;
+            playerHand.add(deck.remove(0));
+            dealerHand.add(deck.remove(0));
+            playerHand.add(deck.remove(0));
+            dealerHand.add(deck.remove(0));
+            System.out.println("Dealer Hand: " + dealerHand.get(0) + " ??");
+            System.out.println("Your Hand: " + playerHand.get(0) + " " + playerHand.get(1));
+            playerTotal = handValue(playerHand);
+            dealerTotal = handValue(dealerHand);
             // if player hasn't won or lost yet
             while (!win && !lose)
             {
@@ -131,34 +113,30 @@ public class BlackjackDriver
                     // if player hit once, get card, remove card from deck, add to running total
                     if (hits == 1)
                     {
-                        cardThree = deck.get(0);
-                        deck.remove(0);
-                        System.out.println("Your Hand: " + cardOne + " " + cardTwo + " " + cardThree);
-                        playerTotal += cardThree.value;
+                        playerHand.add(deck.remove(0));
+                        System.out.println("Your Hand: " + playerHand.get(0) + " " + playerHand.get(1) + " " + playerHand.get(2));
+                        playerTotal = handValue(playerHand);
                     }
                     // if player hit twice, get card, remove card from deck, add to running total
                     else if (hits == 2)
                     {
-                        cardFour = deck.get(0);
-                        deck.remove(0);
-                        System.out.println("Your Hand: " + cardOne + " " + cardTwo + " " + cardThree + " " + cardFour);
-                        playerTotal += cardFour.value;
+                        playerHand.add(deck.remove(0));
+                        System.out.println("Your Hand: " + playerHand.get(0) + " " + playerHand.get(1) + " " + playerHand.get(2) + " " + playerHand.get(3));
+                        playerTotal = handValue(playerHand);
                     }
                     // if player hit three times, get card, remove card from deck, add to running total
                     else if (hits == 3)
                     {
-                        cardFive = deck.get(0);
-                        deck.remove(0);
-                        System.out.println("Your Hand: " + cardOne + " " + cardTwo + " " + cardThree + " " + cardFour + " " + cardFive);
-                        playerTotal += cardFive.value;
+                        playerHand.add(deck.remove(0));
+                        System.out.println("Your Hand: " + playerHand.get(0) + " " + playerHand.get(1) + " " + playerHand.get(2) + " " + playerHand.get(3) + " " + playerHand.get(4));
+                        playerTotal = handValue(playerHand);
                     }
                     // if player hit four times, get card, remove card from deck, add to running total
                     else if (hits == 4)
                     {
-                        cardSix = deck.get(0);
-                        deck.remove(0);
-                        System.out.println("Your Hand: " + cardOne + " " + cardTwo + " " + cardThree + " " + cardFour + " " + cardFive + " " + cardSix);
-                        playerTotal += cardSix.value;
+                        playerHand.add(deck.remove(0));
+                        System.out.println("Your Hand: " + playerHand.get(0) + " " + playerHand.get(1) + " " + playerHand.get(2) + " " + playerHand.get(3) + " " + playerHand.get(4) + " " + playerHand.get(5));
+                        playerTotal = handValue(playerHand);
                     }
 
                 }
@@ -166,49 +144,44 @@ public class BlackjackDriver
                 {
                     if (choice.equalsIgnoreCase("Double") && hits == 0)
                     {
-                        cardThree = deck.get(0);
-                        deck.remove(0);
-                        System.out.println("Your Hand: " + cardOne + " " + cardTwo + " " + cardThree);
-                        playerTotal += cardThree.value;
+                        playerHand.add(deck.remove(0));
+                        System.out.println("Your Hand: " + playerHand.get(0) + " " + playerHand.get(1) + " " + playerHand.get(2));
+                        playerTotal = handValue(playerHand);
                         doubleDown = true;
                         money -= bet;
                     }
                     done = true;
-                    System.out.println("Dealer Hand: " + dealOne + " " + dealTwo);
+                    System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1));
                     // dealer stands on 17 and draws to 16
                     if (dealerTotal <= 16)
                     {
                         // dealer hits until total is greater than 16
                         dealerHits++;
-                        dealThree = deck.get(0);
-                        deck.remove(0);
+                        dealerHand.add(deck.remove(0));
+                        dealerTotal = handValue(dealerHand);
                         System.out.println("Dealer Hits!");
-                        System.out.println("Dealer Hand: " + dealOne + " " + dealTwo + " " + dealThree);
-                        dealerTotal += dealThree.value;
+                        System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2));
                         if (dealerTotal <= 16)
                         {
                             dealerHits++;
-                            dealFour = deck.get(0);
-                            deck.remove(0);
-                            dealerTotal += dealFour.value;
+                            dealerHand.add(deck.remove(0));
+                            dealerTotal = handValue(dealerHand);
                             System.out.println("Dealer Hits!");
-                            System.out.println("Dealer Hand: " + dealOne + " " + dealTwo + " " + dealThree + " " + dealFour);
+                            System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2) + " " + dealerHand.get(3));
                             if (dealerTotal <= 16)
                             {
                                 dealerHits++;
-                                dealFive = deck.get(0);
-                                deck.remove(0);
-                                dealerTotal += dealFive.value;
+                                dealerHand.add(deck.remove(0));
+                                dealerTotal = handValue(dealerHand);
                                 System.out.println("Dealer Hits!");
-                                System.out.println("Dealer Hand: " + dealOne + " " + dealTwo + " " + dealThree + " " + dealFour + " " + dealFive);
+                                System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2) + " " + dealerHand.get(3) + " " + dealerHand.get(4));
                                 if (dealerTotal <= 16)
                                 {
                                     dealerHits++;
-                                    dealSix = deck.get(0);
-                                    deck.remove(0);
-                                    dealerTotal += dealSix.value;
+                                    dealerHand.add(deck.remove(0));
+                                    dealerTotal = handValue(dealerHand);
                                     System.out.println("Dealer Hits!");
-                                    System.out.println("Dealer Hand: " + dealOne + " " + dealTwo + " " + dealThree + " " + dealFour + " " + dealFive + " " + dealSix);
+                                    System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2) + " " + dealerHand.get(3) + " " + dealerHand.get(4) + " " + dealerHand.get(5));
                                 }
                             }
                         }
@@ -220,43 +193,41 @@ public class BlackjackDriver
                         if (dealerHits == 0)
                         {
                             dealerHits++;
-                            dealThree = deck.get(0);
-                            deck.remove(0);
-                            dealerTotal += dealThree.value;
+                            dealerHand.add(deck.remove(0));
+                            dealerTotal = handValue(dealerHand);
                             System.out.println("Dealer Hits!");
-                            System.out.println("Dealer Hand: " + dealOne + " " + dealTwo + " " + dealThree);
+                            System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2));
                         }
                         if (dealerHits == 1 && dealerTotal < playerTotal && dealerTotal < max)
                         {
                             dealerHits++;
-                            dealFour = deck.get(0);
-                            deck.remove(0);
-                            dealerTotal += dealFour.value;
+                            dealerHand.add(deck.remove(0));
+                            dealerTotal = handValue(dealerHand);
                             System.out.println("Dealer Hits!");
-                            System.out.println("Dealer Hand: " + dealOne + " " + dealTwo + " " + dealThree + " " + dealFour);
+                            System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2) + " " + dealerHand.get(3));
                         }
                         if (dealerHits == 2 && dealerTotal < playerTotal && dealerTotal < max)
                         {
                             dealerHits++;
-                            dealFive = deck.get(0);
-                            deck.remove(0);
-                            dealerTotal += dealFive.value;
+                            dealerHand.add(deck.remove(0));
+                            dealerTotal = handValue(dealerHand);
                             System.out.println("Dealer Hits!");
-                            System.out.println("Dealer Hand: " + dealOne + " " + dealTwo + " " + dealThree + " " + dealFour + " " + dealFive);
+                            System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2) + " " + dealerHand.get(3) + " " + dealerHand.get(4));
                         }
                         if (dealerHits == 3 && dealerTotal < playerTotal && dealerTotal < max)
                         {
                             dealerHits++;
-                            dealSix = deck.get(0);
-                            deck.remove(0);
-                            dealerTotal += dealSix.value;
+                            dealerHand.add(deck.remove(0));
+                            dealerTotal = handValue(dealerHand);
                             System.out.println("Dealer Hits!");
-                            System.out.println("Dealer Hand: " + dealOne + " " + dealTwo + " " + dealThree + " " + dealFour + " " + dealFive + " " + dealSix);
+                            System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2) + " " + dealerHand.get(3) + " " + dealerHand.get(4) + " " + dealerHand.get(5));
                         }
                     }
                 }
+                System.out.println(playerTotal);
+                System.out.println(dealerTotal);
                 // if you get a blackjack
-                if (((cardOne.value + cardTwo.value) == max) && playerTotal > dealerTotal && done)
+                if (((playerHand.get(0).value + playerHand.get(1).value) == max) && playerTotal > dealerTotal && done)
                 {
                     money += bet*2;
                     win = true;
@@ -300,23 +271,6 @@ public class BlackjackDriver
                     win = true;
                 }
 
-                // reset cards if you've won or lost
-                if (win || lose)
-                {
-                    cardOne = null;
-                    cardTwo = null;
-                    cardThree = null;
-                    cardFour = null;
-                    cardFive = null;
-                    dealOne = null;
-                    dealTwo = null;
-                    dealOne = null;
-                    dealTwo = null;
-                    dealThree = null;
-                    dealFour = null;
-                    dealFive = null;
-                    dealSix = null;
-                }
                 // if you don't have any money left
                 if (money == 0)
                 {
@@ -324,6 +278,83 @@ public class BlackjackDriver
                     System.out.println("You're broke.");
                 }
             }
+            // remove player and dealer hand after hand is complete
+            emptyHand(playerHand);
+            emptyHand(dealerHand);
+        }
+    }
+    // creates a new deck, shuffles cards, returns the array list of cards
+    public static ArrayList<Card> createDeck(ArrayList<Card> deck)
+    {
+        int value;
+        int size = deck.size();
+        ArrayList<Card> deckTwo = new ArrayList<Card>();
+        for (int i = 0; i < size; i++)
+        {
+            deck.remove(0);
+        }
+        for (int i = 1; i < 14; i++)
+        {
+            // Loop from 1 to 13
+            // Creates 52 card deck
+            if (i > 10)
+            {
+                value = 10;
+            }
+            else
+            {
+                value = i;
+            }
+            // Create a new Card with a suit, value, and rank
+            // Add it to deck
+            Card d = new Card("D", value, i);
+            deckTwo.add(d);
+            Card s = new Card("S", value, i);
+            deckTwo.add(s);
+            Card h = new Card("H", value, i);
+            deckTwo.add(h);
+            Card c = new Card("C", value, i);
+            deckTwo.add(c);
+        }
+        // shuffle deck
+        Collections.shuffle(deckTwo);
+        return deckTwo;
+    }
+    // returns player hand value from dealer or player
+    public static int handValue(ArrayList<Card> hand)
+    {
+        int sum = 0;
+        int ace = 0;
+        for (int i = 0; i < hand.size(); i++)
+        {
+            if (hand.get(i).value == 1 || hand.get(i).value == 11)
+            {
+                hand.get(i).value = 11;
+                ace++;
+            }
+            sum += hand.get(i).value;
+        }
+        if ((sum > 21) && (ace > 0))
+        {
+            for (int i = 0; i < hand.size(); i++)
+            {
+                if (hand.get(i).value == 11)
+                {
+                    hand.get(i).value = 1;
+                    sum += hand.get(i).value;
+                }
+            }
+            sum -= 11*ace;
+        }
+        return sum;
+    }
+    // empty hands
+    public static void emptyHand(ArrayList<Card> hand)
+    {
+        int size = hand.size();
+        for (int i = 0; i < size; i++)
+        {
+            hand.remove(0);
         }
     }
 }
