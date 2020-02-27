@@ -5,6 +5,9 @@ import java.util.Collections;
 
 public class BlackjackDriver
 {
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RED = "\u001B[31m";
     public static void main(String[] args)
     {
         Scanner kb = new Scanner(System.in);
@@ -18,9 +21,8 @@ public class BlackjackDriver
         int hits = 0;
         int dealerHits = 0;
         boolean broke = false;
-        boolean win;
-        boolean lose;
-        boolean done = false;
+        boolean gameOver = false;
+        boolean handDone = false;
         boolean doubleDown = false;
         String choice;
 
@@ -30,7 +32,6 @@ public class BlackjackDriver
         ArrayList<Card> dealerHand = new ArrayList<Card>();
         // create deck
         deck = createDeck(deck);
-
         System.out.println("Welcome to a game of Blackjack!");
         // while player still has money, continue game
         while (!broke)
@@ -41,37 +42,40 @@ public class BlackjackDriver
                 deck = createDeck(deck);
             }
             // reset these variables before the start of a hand
-            win = false;
-            lose = false;
+            gameOver = false;
             hits = 0;
             playerTotal = 0;
             dealerTotal = 0;
             dealerHits = 0;
-            done = false;
+            handDone = false;
             // prompt user for bet amount and if it's greater than their money or <1, prompt again
-            System.out.println("Balance: $" + money);
-            System.out.print("Bet: $");
+            System.out.println(ANSI_GREEN + "Balance: $" + money + ANSI_RESET);
+            System.out.print(ANSI_GREEN + "Bet: $");
             bet = kb.nextInt();
             while (bet > money || bet < 1)
             {
-                System.out.println("Please make a bet between 0 and " + money + ".");
-                System.out.print("Bet: $");
+                System.out.println(ANSI_RED + "Please make a bet between 0 and " + money + "." + ANSI_RESET);
+                System.out.print(ANSI_GREEN + "Bet: $");
                 bet = kb.nextInt();
             }
-            // subtract bet amonunt from money
+            // subtract bet amount from money
             money -= bet;
             // get dealer hand, user hand, remove those four cards from the deck
             playerHand.add(deck.remove(0));
             dealerHand.add(deck.remove(0));
             playerHand.add(deck.remove(0));
             dealerHand.add(deck.remove(0));
-            System.out.println("Dealer Hand: " + dealerHand.get(0) + " ??");
+            System.out.println(ANSI_RESET + "Dealer Hand: " + dealerHand.get(0) + " ??");
             System.out.println("Your Hand: " + playerHand.get(0) + " " + playerHand.get(1));
             playerTotal = handValue(playerHand);
             dealerTotal = handValue(dealerHand);
             // if player hasn't won or lost yet
-            while (!win && !lose)
+            while (!gameOver)
             {
+                if (playerTotal == max)
+                {
+
+                }
                 // prompt user to hit, stand, or double, if you've already hit you can't double down
                 if (hits == 0)
                 {
@@ -84,13 +88,13 @@ public class BlackjackDriver
                 choice = kb.next();
                 while (!choice.equalsIgnoreCase("Hit") && !choice.equalsIgnoreCase("Stand") && !choice.equalsIgnoreCase("Double"))
                 {
-                    System.out.println("Invalid answer...");
+                    System.out.println(ANSI_RED + "Invalid answer..." + ANSI_RESET);
                     System.out.println("Hit, Stand, or Double?");
                     choice = kb.next();
                 }
                 while (choice.equalsIgnoreCase("Double") && hits > 0)
                 {
-                    System.out.println("Invalid answer...");
+                    System.out.println(ANSI_RED + "Invalid answer..." + ANSI_RESET);
                     System.out.println("Hit or Stand?");
                     choice = kb.next();
                 }
@@ -140,8 +144,8 @@ public class BlackjackDriver
                         doubleDown = true;
                         money -= bet;
                     }
-                    // done is a variable that tracks if the user's hand is done (user won't draw any more cards)
-                    done = true;
+                    // handDone is a variable that tracks if the user's hand is handDone (user won't draw any more cards)
+                    handDone = true;
                     System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1));
                     // dealer stands on 17 and draws to 16
                     if (dealerTotal <= 16)
@@ -216,60 +220,59 @@ public class BlackjackDriver
                     }
                 }
                 // if you get a blackjack
-                if (((playerHand.get(0).value + playerHand.get(1).value) == max) && playerTotal > dealerTotal && done)
+                if (((playerHand.get(0).value + playerHand.get(1).value) == max) && playerTotal > dealerTotal && handDone)
                 {
-                    money += bet*2;
-                    win = true;
+                    money += bet + bet*1.5;
+                    gameOver = true;
                 }
                 // if player goes over 21
                 else if (playerTotal > max)
                 {
-                    System.out.println("Bust!");
+                    System.out.println(ANSI_RED + "Bust!" + ANSI_RESET);
                     System.out.println("The dealer wins!");
-                    lose = true;
+                    gameOver = true;
                 }
                 // if dealer goes over 21
                 else if (dealerTotal > max)
                 {
-                    System.out.println("The dealer busts!");
-                    System.out.println("You win!");
+                    System.out.println(ANSI_GREEN + "The dealer busts!");
+                    System.out.println("You win!" + ANSI_RESET);
                     money += bet*2;
-                    win = true;
+                    gameOver = true;
                 }
                 // if dealer beats the player and the player doesn't bust
-                else if (dealerTotal > playerTotal && dealerTotal <= max && done)
+                else if (dealerTotal > playerTotal && dealerTotal <= max && handDone)
                 {
-                    System.out.println("The dealer wins!");
-                    lose = true;
+                    System.out.println(ANSI_RED + "The dealer wins!" + ANSI_RESET);
+                    gameOver = true;
                 }
                 // if dealer and player tie, push
-                else if (dealerTotal == playerTotal && done)
+                else if (dealerTotal == playerTotal && handDone)
                 {
-                    System.out.println("Push!");
+                    System.out.println(ANSI_RED + "Push!" + ANSI_RESET);
                     money += bet;
-                    lose = true;
+                    gameOver = true;
                 }
                 // if player wins and doubled down
-                else if (playerTotal > dealerTotal && playerTotal <= max && done && doubleDown)
+                else if (playerTotal > dealerTotal && playerTotal <= max && handDone && doubleDown)
                 {
-                    System.out.println("You Win!");
+                    System.out.println(ANSI_GREEN + "You Win!" + ANSI_RESET);
                     money += bet*4;
-                    win = true;
+                    gameOver = true;
                 }
                 // if player wins
-                else if (playerTotal > dealerTotal && playerTotal <= max && done)
+                else if (playerTotal > dealerTotal && playerTotal <= max && handDone)
                 {
-                    System.out.println("You Win!");
+                    System.out.println(ANSI_GREEN + "You Win!" + ANSI_RESET);
                     money += bet*2;
-                    win = true;
+                    gameOver = true;
                 }
-
-                // if you don't have any money left
-                if (money == 0)
-                {
-                    broke = true;
-                    System.out.println("You're broke.");
-                }
+            }
+            // if you don't have any money left
+            if (money == 0)
+            {
+                broke = true;
+                System.out.println(ANSI_RED + "You're broke." + ANSI_RESET);
             }
             // remove player and dealer hand after hand is complete
             emptyHand(playerHand);

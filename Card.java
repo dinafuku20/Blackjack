@@ -13,7 +13,7 @@ public class Card
         this.value = value;
     }
 
-    // overrides toString method when printing an object
+    // overrides toString method when printing an object or face card
     public String toString()
     {
         // returns A,J,Q,K based on rank of card, else return the number of the rank
