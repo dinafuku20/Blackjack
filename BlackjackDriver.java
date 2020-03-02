@@ -21,7 +21,7 @@ public class BlackjackDriver
         int hits = 0;
         int dealerHits = 0;
         boolean broke = false;
-        boolean gameOver = false;
+        boolean handOver = false;
         boolean handDone = false;
         boolean doubleDown = false;
         String choice;
@@ -30,9 +30,18 @@ public class BlackjackDriver
         ArrayList<Card> deck = new ArrayList<Card>();
         ArrayList<Card> playerHand = new ArrayList<Card>();
         ArrayList<Card> dealerHand = new ArrayList<Card>();
+
         // create deck
         deck = createDeck(deck);
         System.out.println("Welcome to a game of Blackjack!");
+        System.out.println("Rules and objective:");
+        System.out.println("The goal of the game is to get as close to 21 as you can without going over.");
+        System.out.println("You win if your total is higher than the dealer's total.");
+        System.out.println("The dealer must draw until 17 and stand on 17-21.");
+        System.out.println("Good luck!");
+        System.out.println();
+
+
         // while player still has money, continue game
         while (!broke)
         {
@@ -42,7 +51,7 @@ public class BlackjackDriver
                 deck = createDeck(deck);
             }
             // reset these variables before the start of a hand
-            gameOver = false;
+            handOver = false;
             hits = 0;
             playerTotal = 0;
             dealerTotal = 0;
@@ -70,12 +79,8 @@ public class BlackjackDriver
             playerTotal = handValue(playerHand);
             dealerTotal = handValue(dealerHand);
             // if player hasn't won or lost yet
-            while (!gameOver)
+            while (!handOver)
             {
-                if (playerTotal == max)
-                {
-
-                }
                 // prompt user to hit, stand, or double, if you've already hit you can't double down
                 if (hits == 0)
                 {
@@ -181,56 +186,57 @@ public class BlackjackDriver
                             }
                         }
                     }
-                    // smart dealer, dealer hits to beat the player and doesn't hit if he's already won
-                    else if (dealerTotal > 17 && dealerTotal < playerTotal && dealerTotal < max)
-                    {
-                        // dealer hits until he's beaten the player, gotten 21, or he's lost
-                        if (dealerHits == 0)
-                        {
-                            dealerHits++;
-                            dealerHand.add(deck.remove(0));
-                            dealerTotal = handValue(dealerHand);
-                            System.out.println("Dealer Hits!");
-                            System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2));
-                        }
-                        if (dealerHits == 1 && dealerTotal < playerTotal && dealerTotal < max)
-                        {
-                            dealerHits++;
-                            dealerHand.add(deck.remove(0));
-                            dealerTotal = handValue(dealerHand);
-                            System.out.println("Dealer Hits!");
-                            System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2) + " " + dealerHand.get(3));
-                        }
-                        if (dealerHits == 2 && dealerTotal < playerTotal && dealerTotal < max)
-                        {
-                            dealerHits++;
-                            dealerHand.add(deck.remove(0));
-                            dealerTotal = handValue(dealerHand);
-                            System.out.println("Dealer Hits!");
-                            System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2) + " " + dealerHand.get(3) + " " + dealerHand.get(4));
-                        }
-                        if (dealerHits == 3 && dealerTotal < playerTotal && dealerTotal < max)
-                        {
-                            dealerHits++;
-                            dealerHand.add(deck.remove(0));
-                            dealerTotal = handValue(dealerHand);
-                            System.out.println("Dealer Hits!");
-                            System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2) + " " + dealerHand.get(3) + " " + dealerHand.get(4) + " " + dealerHand.get(5));
-                        }
-                    }
                 }
+                //     // smart dealer, dealer hits to beat the player and doesn't hit if he's already won
+                //     else if (dealerTotal > 17 && dealerTotal < playerTotal && dealerTotal < max)
+                //     {
+                //         // dealer hits until he's beaten the player, gotten 21, or he's lost
+                //         if (dealerHits == 0)
+                //         {
+                //             dealerHits++;
+                //             dealerHand.add(deck.remove(0));
+                //             dealerTotal = handValue(dealerHand);
+                //             System.out.println("Dealer Hits!");
+                //             System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2));
+                //         }
+                //         if (dealerHits == 1 && dealerTotal < playerTotal && dealerTotal < max)
+                //         {
+                //             dealerHits++;
+                //             dealerHand.add(deck.remove(0));
+                //             dealerTotal = handValue(dealerHand);
+                //             System.out.println("Dealer Hits!");
+                //             System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2) + " " + dealerHand.get(3));
+                //         }
+                //         if (dealerHits == 2 && dealerTotal < playerTotal && dealerTotal < max)
+                //         {
+                //             dealerHits++;
+                //             dealerHand.add(deck.remove(0));
+                //             dealerTotal = handValue(dealerHand);
+                //             System.out.println("Dealer Hits!");
+                //             System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2) + " " + dealerHand.get(3) + " " + dealerHand.get(4));
+                //         }
+                //         if (dealerHits == 3 && dealerTotal < playerTotal && dealerTotal < max)
+                //         {
+                //             dealerHits++;
+                //             dealerHand.add(deck.remove(0));
+                //             dealerTotal = handValue(dealerHand);
+                //             System.out.println("Dealer Hits!");
+                //             System.out.println("Dealer Hand: " + dealerHand.get(0) + " " + dealerHand.get(1) + " " + dealerHand.get(2) + " " + dealerHand.get(3) + " " + dealerHand.get(4) + " " + dealerHand.get(5));
+                //         }
+                //     }
+                // }
                 // if you get a blackjack
                 if (((playerHand.get(0).value + playerHand.get(1).value) == max) && playerTotal > dealerTotal && handDone)
                 {
                     money += bet + bet*1.5;
-                    gameOver = true;
+                    handOver = true;
                 }
                 // if player goes over 21
                 else if (playerTotal > max)
                 {
                     System.out.println(ANSI_RED + "Bust!" + ANSI_RESET);
                     System.out.println("The dealer wins!");
-                    gameOver = true;
+                    handOver = true;
                 }
                 // if dealer goes over 21
                 else if (dealerTotal > max)
@@ -238,34 +244,34 @@ public class BlackjackDriver
                     System.out.println(ANSI_GREEN + "The dealer busts!");
                     System.out.println("You win!" + ANSI_RESET);
                     money += bet*2;
-                    gameOver = true;
+                    handOver = true;
                 }
                 // if dealer beats the player and the player doesn't bust
                 else if (dealerTotal > playerTotal && dealerTotal <= max && handDone)
                 {
                     System.out.println(ANSI_RED + "The dealer wins!" + ANSI_RESET);
-                    gameOver = true;
+                    handOver = true;
                 }
                 // if dealer and player tie, push
                 else if (dealerTotal == playerTotal && handDone)
                 {
                     System.out.println(ANSI_RED + "Push!" + ANSI_RESET);
                     money += bet;
-                    gameOver = true;
+                    handOver = true;
                 }
                 // if player wins and doubled down
                 else if (playerTotal > dealerTotal && playerTotal <= max && handDone && doubleDown)
                 {
                     System.out.println(ANSI_GREEN + "You Win!" + ANSI_RESET);
                     money += bet*4;
-                    gameOver = true;
+                    handOver = true;
                 }
                 // if player wins
                 else if (playerTotal > dealerTotal && playerTotal <= max && handDone)
                 {
                     System.out.println(ANSI_GREEN + "You Win!" + ANSI_RESET);
                     money += bet*2;
-                    gameOver = true;
+                    handOver = true;
                 }
             }
             // if you don't have any money left
