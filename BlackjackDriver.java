@@ -277,11 +277,6 @@ public class BlackjackDriver
                     money += bet*2;
                     handOver = true;
                 }
-                // just for spacing and design
-                if (handOver = true);
-                {
-                    System.out.println();
-                }
             }
             // if you don't have any money left
             if (money == 0)
@@ -289,6 +284,7 @@ public class BlackjackDriver
                 broke = true;
                 System.out.println(ANSI_RED + "You're broke." + ANSI_RESET);
             }
+            System.out.println();
             // remove player and dealer hand after hand is complete
             emptyHand(playerHand);
             emptyHand(dealerHand);
