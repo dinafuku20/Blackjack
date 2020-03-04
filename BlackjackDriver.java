@@ -234,7 +234,6 @@ public class BlackjackDriver
                     money += bet + bet*1.5;
                     System.out.println("Blackjack! You win!");
                     handOver = true;
-                    System.out.println();
                 }
                 // if player goes over 21
                 else if (playerTotal > max)
@@ -242,7 +241,6 @@ public class BlackjackDriver
                     System.out.println(ANSI_RED + "Bust!" + ANSI_RESET);
                     System.out.println("The dealer wins!");
                     handOver = true;
-                    System.out.println();
                 }
                 // if dealer goes over 21
                 else if (dealerTotal > max)
@@ -251,14 +249,12 @@ public class BlackjackDriver
                     System.out.println("You win!" + ANSI_RESET);
                     money += bet*2;
                     handOver = true;
-                    System.out.println();
                 }
                 // if dealer beats the player and the player doesn't bust
                 else if (dealerTotal > playerTotal && dealerTotal <= max && handDone)
                 {
                     System.out.println(ANSI_RED + "The dealer wins!" + ANSI_RESET);
                     handOver = true;
-                    System.out.println();
                 }
                 // if dealer and player tie, push
                 else if (dealerTotal == playerTotal && handDone)
@@ -266,7 +262,6 @@ public class BlackjackDriver
                     System.out.println(ANSI_RED + "Push!" + ANSI_RESET);
                     money += bet;
                     handOver = true;
-                    System.out.println();
                 }
                 // if player wins and doubled down
                 else if (playerTotal > dealerTotal && playerTotal <= max && handDone && doubleDown)
@@ -274,7 +269,6 @@ public class BlackjackDriver
                     System.out.println(ANSI_GREEN + "You Win!" + ANSI_RESET);
                     money += bet*4;
                     handOver = true;
-                    System.out.println();
                 }
                 // if player wins
                 else if (playerTotal > dealerTotal && playerTotal <= max && handDone)
@@ -282,6 +276,10 @@ public class BlackjackDriver
                     System.out.println(ANSI_GREEN + "You Win!" + ANSI_RESET);
                     money += bet*2;
                     handOver = true;
+                }
+                // just for spacing and design
+                if (handOver = true);
+                {
                     System.out.println();
                 }
             }
