@@ -33,6 +33,9 @@ public class BlackjackDriver
 
         // create deck
         deck = createDeck(deck);
+
+        // rules and objectives
+        System.out.println();
         System.out.println("Welcome to a game of Blackjack!");
         System.out.println("Rules and objective:");
         System.out.println("The goal of the game is to get as close to 21 as you can without going over.");
@@ -40,7 +43,6 @@ public class BlackjackDriver
         System.out.println("The dealer must draw until 17 and stand on 17-21.");
         System.out.println("Good luck!");
         System.out.println();
-
 
         // while player still has money, continue game
         while (!broke)
@@ -61,6 +63,7 @@ public class BlackjackDriver
             System.out.println(ANSI_GREEN + "Balance: $" + money + ANSI_RESET);
             System.out.print(ANSI_GREEN + "Bet: $");
             bet = kb.nextInt();
+            System.out.println();
             while (bet > money || bet < 1)
             {
                 System.out.println(ANSI_RED + "Please make a bet between 0 and " + money + "." + ANSI_RESET);
@@ -229,7 +232,9 @@ public class BlackjackDriver
                 if (((playerHand.get(0).value + playerHand.get(1).value) == max) && playerTotal > dealerTotal && handDone)
                 {
                     money += bet + bet*1.5;
+                    System.out.println("Blackjack! You win!");
                     handOver = true;
+                    System.out.println();
                 }
                 // if player goes over 21
                 else if (playerTotal > max)
@@ -237,6 +242,7 @@ public class BlackjackDriver
                     System.out.println(ANSI_RED + "Bust!" + ANSI_RESET);
                     System.out.println("The dealer wins!");
                     handOver = true;
+                    System.out.println();
                 }
                 // if dealer goes over 21
                 else if (dealerTotal > max)
@@ -245,12 +251,14 @@ public class BlackjackDriver
                     System.out.println("You win!" + ANSI_RESET);
                     money += bet*2;
                     handOver = true;
+                    System.out.println();
                 }
                 // if dealer beats the player and the player doesn't bust
                 else if (dealerTotal > playerTotal && dealerTotal <= max && handDone)
                 {
                     System.out.println(ANSI_RED + "The dealer wins!" + ANSI_RESET);
                     handOver = true;
+                    System.out.println();
                 }
                 // if dealer and player tie, push
                 else if (dealerTotal == playerTotal && handDone)
@@ -258,6 +266,7 @@ public class BlackjackDriver
                     System.out.println(ANSI_RED + "Push!" + ANSI_RESET);
                     money += bet;
                     handOver = true;
+                    System.out.println();
                 }
                 // if player wins and doubled down
                 else if (playerTotal > dealerTotal && playerTotal <= max && handDone && doubleDown)
@@ -265,6 +274,7 @@ public class BlackjackDriver
                     System.out.println(ANSI_GREEN + "You Win!" + ANSI_RESET);
                     money += bet*4;
                     handOver = true;
+                    System.out.println();
                 }
                 // if player wins
                 else if (playerTotal > dealerTotal && playerTotal <= max && handDone)
@@ -272,6 +282,7 @@ public class BlackjackDriver
                     System.out.println(ANSI_GREEN + "You Win!" + ANSI_RESET);
                     money += bet*2;
                     handOver = true;
+                    System.out.println();
                 }
             }
             // if you don't have any money left
